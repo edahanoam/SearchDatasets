@@ -15,16 +15,25 @@ def connect_to_doc(local=False):
         st.write(df)
     else:
         df = pd.read_csv("after_unifying.csv", dtype=str).fillna("")
-        st.write(df)
+        #st.write(df)
+        return df
 
 
 
+def set_search(df):
+    text_search = st.text_input("Search datasets by languages", value="")
+    # Filter the dataframe using masks
+    m1 = df["languages "].apply(lambda x: text_search in x)
+    filtered_df = df[m1]
+
+    if text_search:
+        st.write(filtered_df)
 
 
 if __name__ == '__main__':
     page_set()
-    connect_to_doc(True)
-
+    df= connect_to_doc(True)
+    set_search(df)
 
 
 
