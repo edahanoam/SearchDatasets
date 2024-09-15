@@ -17,9 +17,19 @@ def display_with_links(df, url_column):
 
 
 def page_set():
+    # Create columns
+
     st.set_page_config(page_title="Dataset Search", layout="wide")
+    col1, col2 = st.columns([8, 2])  # Adjust the ratio based on your needs
+    if 'show_form' not in st.session_state:
+        st.session_state.show_form = False
+
     #st.set_page_config(page_title="Dataset Search", page_icon="🐍", layout="wide")
-    st.title("Summarization Datasets Search Engine")
+    with col1:
+        st.title("Summarization Datasets Search Engine")
+    with col2:
+        if st.button('Suggest A New Dataset'):
+            st.session_state.show_form = True
 
 
 def connect_to_doc(local=False):
@@ -35,8 +45,6 @@ def connect_to_doc(local=False):
 
 
 def clean_df(df):
-
-
     # Remove columns that start with "Unn"
     df = df.loc[:, ~df.columns.str.startswith('Unn')]
     # List of columns to remove
@@ -161,11 +169,47 @@ def set_search2(df):
             st.write("No results match your criteria.")
 
 
+def handle_button():
+    # if 'show_form' not in st.session_state:
+    #     st.session_state.show_form = False
+    #
+    # # Button to show the form
+    # if st.button('Suggest A New Dataset'):
+    #     st.session_state.show_form = True
+
+    # Check if the form should be displayed
+    if st.session_state.show_form:
+        with st.form(key='dataset_form'):
+            # Input fields in the form
+            dataset_name = st.text_input("Dataset Name")
+            dataset_paper_name = st.text_input("Paper Name")
+            dataset_paper_link = st.text_input("Paper Link")
+            dataset_length = st.selectbox("Select Length", ['Paragraph','Highlights','Spans','One Sentence', 'Other'])
+            dataset_domain = st.selectbox("Select Domain", ['News', 'Dialogue', 'Scientific', 'Encyclopedia', 'Opinions/Arguments', 'Social Media', 'Instructional', 'Legal', 'Literature', 'Others'])
+            dataset_languages = st.text_input("Supported Languages")
+            dataset_language_modality = st.selectbox("Select Language Modality", ['Monolingual','Multilingual','Crosslingual', 'Other'])
+            dataset_Annotations = st.selectbox("Select Annotations Efforts", ['Automatic','Semi-Automatic','Human Annotation', 'Other'])
+            dataset_Supervision = st.selectbox("Select Source For Supervision", ['Naturally','Distant','Dedicated', 'Other'])
+            dataset_Availiability = st.selectbox("Select Availability", ['Publicly Available (licensed or unlicensed)','Upon Request','Tool Access', 'Other'])
+
+
+            # Form submission button
+            submit_button = st.form_submit_button("Submit Dataset")
+            if submit_button:
+                # Optionally reset the form flag
+                st.session_state.show_form = False
+
+
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
     df = clean_df(df)
-    set_search2(df)
+
+    if not st.session_state.show_form:
+        set_search2(df)
+    else:
+        handle_button()
+
 
 
 
