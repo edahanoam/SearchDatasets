@@ -34,7 +34,9 @@ def connect_to_doc(local=False):
         return df
 
 
-def clean_domain(df):
+def clean_df(df):
+
+
     # Remove columns that start with "Unn"
     df = df.loc[:, ~df.columns.str.startswith('Unn')]
     # List of columns to remove
@@ -50,6 +52,14 @@ def clean_domain(df):
     df.columns = [col.title() for col in df.columns]
     df['Language Modality'] = df['Language Modality'].str.title()
 
+    # Replace 'Extreme' with 'One Sentence' in the 'length' column
+    df.loc[df['Length'] == 'Extreme', 'Length'] = 'One Sentence'
+
+    # unite annotations Efforts
+    df.loc[df['Annotation Efforts'].str.contains('Human', case=False, na=False), 'Annotation Efforts'] = 'Human'
+
+    # unite Supervision
+    df.loc[df['Sources For Supervision'].str.contains('Distant', case=False, na=False), 'Sources For Supervision'] = 'Distant'
 
     return df
 
@@ -154,7 +164,7 @@ def set_search2(df):
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
-    df = clean_domain(df)
+    df = clean_df(df)
     set_search2(df)
 
 
