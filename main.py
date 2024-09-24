@@ -61,6 +61,9 @@ def clean_df(df):
     df['Language Modality'] = df['Language Modality'].str.title()
 
     # Replace 'Extreme' with 'One Sentence' in the 'length' column
+    df.loc[df['Venue'] == '????', 'Venue'] = '-'
+
+    # Replace '????' with '-'
     df.loc[df['Length'] == 'Extreme', 'Length'] = 'One Sentence'
 
     # unite annotations Efforts
