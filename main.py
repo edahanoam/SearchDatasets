@@ -91,7 +91,7 @@ def set_search2(df):
     combined_mask = pd.Series([True] * len(df))
 
     #languages
-    df['Languages'] = df['Languages'].apply(lambda x: x.split(', '))
+    df['Languages '] = df['Languages '].apply(lambda x: x.split(', '))
     df['Languages '] = df['Languages '].apply(literal_eval)
     unique_languages = set(lang for lang_list in df['Languages '].dropna() for lang in lang_list)
     selected_languages = st.multiselect("Languages", options=sorted(unique_languages))
