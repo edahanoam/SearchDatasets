@@ -91,10 +91,9 @@ def set_search2(df):
     combined_mask = pd.Series([True] * len(df))
 
     #languages
-    #df['Languages '] = df['Languages '].apply(literal_eval)
-    #unique_languages = set(lang for lang_list in df['Languages '].dropna() for lang in lang_list)
-    #selected_languages = st.multiselect("Languages", options=sorted(unique_languages))
-    unique_languages = set(df['Languages '].dropna().unique())
+    df['Languages'] = df['Languages'].apply(lambda x: x.split(', '))
+    df['Languages '] = df['Languages '].apply(literal_eval)
+    unique_languages = set(lang for lang_list in df['Languages '].dropna() for lang in lang_list)
     selected_languages = st.multiselect("Languages", options=sorted(unique_languages))
 
     #language modality
@@ -116,8 +115,8 @@ def set_search2(df):
     selected_Annotation_Efforts= st.multiselect("Annotation Efforts", options=sorted(unique_Annotation_Efforts))
 
     ##Source of Supervision
-    unique_Supervision = set(df['Sources For Supervision'].dropna().unique())
-    selected_Supervision= st.multiselect("Sources For Supervision", options=sorted(unique_Supervision))
+    unique_Supervision = set(df['Supervision'].dropna().unique())
+    selected_Supervision= st.multiselect("Supervision", options=sorted(unique_Supervision))
 
     #
     if selected_languages or selected_modality or selected_domain or selected_Length or selected_Length or selected_Annotation_Efforts or selected_Supervision:
