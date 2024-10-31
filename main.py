@@ -35,9 +35,12 @@ def page_set():
 def page_set2():
     st.set_page_config(page_title="Dataset Search", layout="wide")
     st.title("Summarization Datasets Search Engine")
+    if 'show_form' not in st.session_state:
+        st.session_state.show_form = False
+
     url = "https://github.com/edahanoam/Awesome-Summarization-Datasets"
-    st.write("For the latest list and to suggest new datasets, please visit our [GitHub page](%s)" % url)
-    st.markdown("For the latest list and to suggest new datasets, please visit our [GitHub page](%s)" % url)
+    st.write("For an updated list and to suggest new datasets, please visit our [GitHub page](%s)." % url)
+    #st.markdown("For the latest list and to suggest new datasets, please visit our [GitHub page](%s)" % url)
 
 
 
