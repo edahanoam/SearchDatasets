@@ -44,8 +44,8 @@ def connect_to_doc(local=False):
             df = df.drop(columns=['Unnamed: 0'],axis=1)
         df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
                   inplace=True)
+        df = df[df['Availability'] != 'Unknown']
 
-        #st.write(df
         return df
 
 
