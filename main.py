@@ -42,18 +42,13 @@ def connect_to_doc(local=False):
         df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
         if 'Unnamed: 0' in df.columns:
             df = df.drop(columns=['Unnamed: 0'],axis=1)
-        #df['Paper Name '] = df.apply(lambda row: f"[{row['Paper Name ']}]({row['Paper Link']})", axis=1)
-        #df = df.drop(columns=['Paper Link'], axis=1)
-
-        df = df.rename(columns={"Paper Name ": "Paper",'Published Year':'Date','Where':'Venue'})
-
         #st.write(df)
         return df
 
 
 def clean_df(df):
     # Remove columns that start with "Unn"
-    df = df.loc[:, ~df.columns.str.startswith('Unn')]
+    df = df.loc[:, ~df.columns.str.startswith('Unn'b)]
     # List of columns to remove
     to_remove = ['paper name ','fine_domain ', 'how was it collected ', 'collection category', 'Where', 'packages', 'comments']
 
@@ -168,9 +163,10 @@ def set_search2(df):
                 filtered_df,
                 column_config={
                     "Paper Link": st.column_config.LinkColumn(
-                        "Paper Name ",  # Display text from 'Paper Name'
-                        url_column="Paper Link",  # URL from 'Paper Link'
-                        max_chars=100
+                        "Paper Link",
+                        validate=r"^https://[a-z]+\.streamlit\.app$",
+                        max_chars=100,
+                        display_text=r"https://(.*?)\.streamlit\.app"
                     )
                 },
                 hide_index=True,
