@@ -44,6 +44,7 @@ def connect_to_doc(local=False):
             df = df.drop(columns=['Unnamed: 0'],axis=1)
         df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
                   inplace=True)
+        df = df.drop(df.loc[df['Availability'] == 'Unknown'].index)
 
         return df
 
@@ -60,6 +61,7 @@ def set_search(df):
 
 
 def set_search2(df):
+    df = df.reset_index(drop=True)
 
     combined_mask = pd.Series([True] * len(df))
 
@@ -182,7 +184,6 @@ def handle_button():
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
-    df = df.drop(df.loc[df['Availability'] == 'Unknown'].index)
 
     if not st.session_state.show_form:
         set_search2(df)
