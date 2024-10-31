@@ -29,7 +29,8 @@ def page_set():
         st.title("Summarization Datasets Search Engine")
     with col2:
         if st.button('Suggest A New Dataset'):
-            st.session_state.show_form = True
+            st.write("first try")
+            #st.session_state.show_form = True
 
 
 def connect_to_doc(local=False):
