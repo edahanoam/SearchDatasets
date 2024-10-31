@@ -49,38 +49,6 @@ def connect_to_doc(local=False):
         return df
 
 
-def clean_df(df):
-    # Remove columns that start with "Unn"
-    df = df.loc[:, ~df.columns.str.startswith('Unn')]
-    # List of columns to remove
-    to_remove = ['paper name ','fine_domain ', 'how was it collected ', 'collection category', 'Where', 'packages', 'comments']
-
-    # Remove the columns in the list
-    df.drop(columns=to_remove, inplace=True)
-
-    # Rename 'city' to 'City Name'
-    df.rename(columns={'how many samples':'#Samples','where': 'Venue','Languages choice ': 'Language Modality','Types':'Length','workload':'Annotation Efforts','Formation':'Sources for Supervision' }, inplace=True)
-
-    # Capitalize
-    df.columns = [col.title() for col in df.columns]
-    df['Language Modality'] = df['Language Modality'].str.title()
-
-    # Replace 'Extreme' with 'One Sentence' in the 'length' column
-    df.loc[df['Venue'] == '????', 'Venue'] = '-'
-
-    # Replace '????' with '-'
-    df.loc[df['Length'] == 'Extreme', 'Length'] = 'One Sentence'
-
-    # unite annotations Efforts
-    df.loc[df['Annotation Efforts'].str.contains('Human', case=False, na=False), 'Annotation Efforts'] = 'Human'
-
-    # unite Supervision
-    df.loc[df['Sources For Supervision'].str.contains('Distant', case=False, na=False), 'Sources For Supervision'] = 'Distant'
-
-    return df
-
-
-
 def set_search(df):
     text_search = st.text_input("Search datasets by languages", value="")
     # Filter the dataframe using masks
@@ -159,18 +127,17 @@ def set_search2(df):
         # Apply the combined mask to filter the DataFrame
         filtered_df = df[combined_mask]
         if not filtered_df.empty:
+            filtered_df["Paper Name (Link)"] = filtered_df.apply(
+                lambda row: f"[{row['Paper Name']}]({row['Paper Link']})", axis=1
+            )
             #st.markdown(df.to_html(render_links=True), unsafe_allow_html=True)
 
             #change to links
+
             st.data_editor(
-                filtered_df,
+                filtered_df.drop(columns="Paper Link"),
                 column_config={
-                    "Paper Link": st.column_config.LinkColumn(
-                        "Paper Link",
-                        validate=r"^https://[a-z]+\.streamlit\.app$",
-                        max_chars=100,
-                        display_text=r"https://(.*?)\.streamlit\.app"
-                    )
+                    "Paper Name (Link)": st.column_config.TextColumn("Paper Name", max_chars=100)
                 },
                 hide_index=True,
             )
@@ -214,7 +181,6 @@ def handle_button():
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
-    #df = clean_df(df)
 
     if not st.session_state.show_form:
         set_search2(df)
