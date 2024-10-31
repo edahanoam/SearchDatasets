@@ -42,8 +42,8 @@ def connect_to_doc(local=False):
         df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
         if 'Unnamed: 0' in df.columns:
             df = df.drop(columns=['Unnamed: 0'],axis=1)
-        df['Paper Name '] = df.apply(lambda row: f"[{row['Paper Name ']}]({row['Paper Link']})", axis=1)
-        df = df.drop(columns=['Paper Link'], axis=1)
+        #df['Paper Name '] = df.apply(lambda row: f"[{row['Paper Name ']}]({row['Paper Link']})", axis=1)
+        #df = df.drop(columns=['Paper Link'], axis=1)
 
         df = df.rename(columns={"Paper Name ": "Paper",'Published Year':'Date','Where':'Venue'})
 
@@ -162,21 +162,19 @@ def set_search2(df):
         filtered_df = df[combined_mask]
         if not filtered_df.empty:
             #st.markdown(df.to_html(render_links=True), unsafe_allow_html=True)
-            st.write(df.to_html(escape=False), unsafe_allow_html=True)
 
-            # #change to links
-            # st.data_editor(
-            #     filtered_df,
-            #     column_config={
-            #         "Paper Link": st.column_config.LinkColumn(
-            #             "Paper Link",
-            #             validate=r"^https://[a-z]+\.streamlit\.app$",
-            #             max_chars=100,
-            #             display_text=r"https://(.*?)\.streamlit\.app"
-            #         )
-            #     },
-            #     hide_index=True,
-            # )
+            #change to links
+            st.data_editor(
+                filtered_df,
+                column_config={
+                    "Paper Link": st.column_config.LinkColumn(
+                        "Paper Name ",  # Display text from 'Paper Name'
+                        url_column="Paper Link",  # URL from 'Paper Link'
+                        max_chars=100
+                    )
+                },
+                hide_index=True,
+            )
 
             #st.write(filtered_df)
         else:
