@@ -32,6 +32,15 @@ def page_set():
             #st.session_state.show_form = True
 
 
+def page_set2():
+    st.set_page_config(page_title="Dataset Search", layout="wide")
+    st.title("Summarization Datasets Search Engine")
+    url = "https://github.com/edahanoam/Awesome-Summarization-Datasets"
+    st.write("For the latest list and to suggest new datasets, please visit our [GitHub page](%s)" % url)
+    st.markdown("For the latest list and to suggest new datasets, please visit our [GitHub page](%s)" % url)
+
+
+
 def connect_to_doc(local=False):
     if not local:
         # Connect to the Google Sheet
@@ -182,7 +191,7 @@ def handle_button():
 
 
 if __name__ == '__main__':
-    page_set()
+    page_set2()
     df= connect_to_doc(True)
 
     if not st.session_state.show_form:
