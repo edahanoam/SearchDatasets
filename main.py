@@ -42,6 +42,9 @@ def connect_to_doc(local=False):
         df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
         if 'Unnamed: 0' in df.columns:
             df = df.drop(columns=['Unnamed: 0'],axis=1)
+        df.rename(columns={'Where':'Venue',"Published Year":"Date"},
+                  inplace=True)
+
         #st.write(df)
         return df
 
