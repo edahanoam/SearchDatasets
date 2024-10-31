@@ -128,7 +128,7 @@ def set_search2(df):
         filtered_df = df[combined_mask]
         if not filtered_df.empty:
             filtered_df["Paper Name (Link)"] = filtered_df.apply(
-                lambda row: f"[{row['Paper Name']}]({row['Paper Link']})", axis=1
+                lambda row: f"[{row['Paper Name ']}]({row['Paper Link']})", axis=1
             )
             #st.markdown(df.to_html(render_links=True), unsafe_allow_html=True)
 
