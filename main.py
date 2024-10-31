@@ -24,7 +24,6 @@ def page_set():
     if 'show_form' not in st.session_state:
         st.session_state.show_form = False
 
-    #st.set_page_config(page_title="Dataset Search", page_icon="🐍", layout="wide")
     with col1:
         st.title("Summarization Datasets Search Engine")
     with col2:
