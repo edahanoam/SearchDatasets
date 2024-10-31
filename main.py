@@ -40,7 +40,7 @@ def connect_to_doc(local=False):
         df = pd.read_csv(url, dtype=str).fillna("")
         st.write(df)
     else:
-        df = pd.read_csv("after_unifying.csv", dtype=str).fillna("")
+        df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
         #st.write(df)
         return df
 
@@ -105,9 +105,9 @@ def set_search2(df):
     selected_domain= st.multiselect("Domain", options=sorted(unique_domains))
 
 
-    #Length
-    unique_Length = set(df['Length'].dropna().unique())
-    selected_Length= st.multiselect("Length", options=sorted(unique_Length))
+    #Shape
+    unique_Length = set(df['Shape'].dropna().unique())
+    selected_Length= st.multiselect("Shape", options=sorted(unique_Length))
 
 
     #Annotation Efforts
@@ -135,16 +135,18 @@ def set_search2(df):
             combined_mask &= mask3
 
         if selected_Length:
-            mask4 = df['Length'].isin(selected_Length)
+            mask4 = df['Shape'].isin(selected_Length)
             combined_mask &= mask4
+
+        if selected_Supervision:
+            mask6 = df['Supervision'].isin(selected_Supervision)
+            combined_mask &= mask6
+
 
         if selected_Annotation_Efforts:
             mask5 = df['Annotation Efforts'].isin(selected_Annotation_Efforts)
             combined_mask &= mask5
 
-        if selected_Supervision:
-            mask6 = df['Sources For Supervision'].isin(selected_Supervision)
-            combined_mask &= mask6
 
 
 
@@ -207,7 +209,7 @@ def handle_button():
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
-    df = clean_df(df)
+    #df = clean_df(df)
 
     if not st.session_state.show_form:
         set_search2(df)
