@@ -40,7 +40,7 @@ def connect_to_doc(local=False):
         df = pd.read_csv(url, dtype=str).fillna("")
         st.write(df)
     else:
-        df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
+        df = pd.read_csv("after_unifying.csv", dtype=str).fillna("")
         #st.write(df)
         return df
 
