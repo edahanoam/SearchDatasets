@@ -92,7 +92,9 @@ def set_search2(df):
 
     #languages
     df['Languages '] = df['Languages '].apply(literal_eval)
-    unique_languages = set(lang for lang_list in df['Languages '].dropna() for lang in lang_list)
+    #unique_languages = set(lang for lang_list in df['Languages '].dropna() for lang in lang_list)
+    #selected_languages = st.multiselect("Languages", options=sorted(unique_languages))
+    unique_languages = set(df['Languages '].dropna().unique())
     selected_languages = st.multiselect("Languages", options=sorted(unique_languages))
 
     #language modality
