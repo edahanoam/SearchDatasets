@@ -40,40 +40,9 @@ def connect_to_doc(local=False):
         df = pd.read_csv(url, dtype=str).fillna("")
         st.write(df)
     else:
-        df = pd.read_csv("after_unifying.csv", dtype=str).fillna("")
+        df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
         #st.write(df)
         return df
-
-
-def clean_df(df):
-    # Remove columns that start with "Unn"
-    df = df.loc[:, ~df.columns.str.startswith('Unn')]
-    # List of columns to remove
-    to_remove = ['paper name ','fine_domain ', 'how was it collected ', 'collection category', 'Where', 'packages', 'comments']
-
-    # Remove the columns in the list
-    df.drop(columns=to_remove, inplace=True)
-
-    # Rename 'city' to 'City Name'
-    df.rename(columns={'how many samples':'#Samples','where': 'Venue','Languages choice ': 'Language Modality','Types':'Length','workload':'Annotation Efforts','Formation':'Sources for Supervision' }, inplace=True)
-
-    # Capitalize
-    df.columns = [col.title() for col in df.columns]
-    df['Language Modality'] = df['Language Modality'].str.title()
-
-    # Replace 'Extreme' with 'One Sentence' in the 'length' column
-    df.loc[df['Venue'] == '????', 'Venue'] = '-'
-
-    # Replace '????' with '-'
-    df.loc[df['Length'] == 'Extreme', 'Length'] = 'One Sentence'
-
-    # unite annotations Efforts
-    df.loc[df['Annotation Efforts'].str.contains('Human', case=False, na=False), 'Annotation Efforts'] = 'Human'
-
-    # unite Supervision
-    df.loc[df['Sources For Supervision'].str.contains('Distant', case=False, na=False), 'Sources For Supervision'] = 'Distant'
-
-    return df
 
 
 
@@ -207,7 +176,6 @@ def handle_button():
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
-    df = clean_df(df)
 
     if not st.session_state.show_form:
         set_search2(df)
