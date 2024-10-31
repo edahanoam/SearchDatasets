@@ -182,7 +182,7 @@ def handle_button():
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
-    df = df[df['Availability'] != 'Unknown']
+    df = df.drop(df.loc[df['Availability'] == 'Unknown'].index)
 
     if not st.session_state.show_form:
         set_search2(df)
