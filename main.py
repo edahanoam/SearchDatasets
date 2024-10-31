@@ -44,7 +44,6 @@ def connect_to_doc(local=False):
             df = df.drop(columns=['Unnamed: 0'],axis=1)
         df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
                   inplace=True)
-        df = df[df['Availability'] != 'Unknown']
 
         return df
 
@@ -183,6 +182,7 @@ def handle_button():
 if __name__ == '__main__':
     page_set()
     df= connect_to_doc(True)
+    df = df[df['Availability'] != 'Unknown']
 
     if not st.session_state.show_form:
         set_search2(df)
