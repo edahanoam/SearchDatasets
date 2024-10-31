@@ -42,11 +42,12 @@ def connect_to_doc(local=False):
         df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
         if 'Unnamed: 0' in df.columns:
             df = df.drop(columns=['Unnamed: 0'],axis=1)
-        df.rename(columns={'Where':'Venue',"Published Year":"Date"},
+        df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
                   inplace=True)
 
-        #st.write(df)
+        #st.write(df
         return df
+
 
 
 def set_search(df):
@@ -127,17 +128,18 @@ def set_search2(df):
         # Apply the combined mask to filter the DataFrame
         filtered_df = df[combined_mask]
         if not filtered_df.empty:
-            filtered_df["Paper Name (Link)"] = filtered_df.apply(
-                lambda row: f"[{row['Paper Name ']}]({row['Paper Link']})", axis=1
-            )
             #st.markdown(df.to_html(render_links=True), unsafe_allow_html=True)
 
             #change to links
-
             st.data_editor(
-                filtered_df.drop(columns="Paper Link"),
+                filtered_df,
                 column_config={
-                    "Paper Name (Link)": st.column_config.TextColumn("Paper Name", max_chars=100)
+                    "Paper Link": st.column_config.LinkColumn(
+                        "Paper Link",
+                        validate=r"^https://[a-z]+\.streamlit\.app$",
+                        max_chars=100,
+                        display_text=r"https://(.*?)\.streamlit\.app"
+                    )
                 },
                 hide_index=True,
             )
