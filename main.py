@@ -48,7 +48,7 @@ def connect_to_doc(local=False):
 
 def clean_df(df):
     # Remove columns that start with "Unn"
-    df = df.loc[:, ~df.columns.str.startswith('Unn'b)]
+    df = df.loc[:, ~df.columns.str.startswith('Unn')]
     # List of columns to remove
     to_remove = ['paper name ','fine_domain ', 'how was it collected ', 'collection category', 'Where', 'packages', 'comments']
 
