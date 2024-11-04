@@ -14,7 +14,7 @@ def load_datasets():
 
 def page_set():
     st.set_page_config(page_title="Dataset Search", layout="wide")
-    st.title("Summarization Datasets Search Engine")
+    st.title("Explore Summarization Datasets")
     if 'show_form' not in st.session_state:
         st.session_state.show_form = False
 
