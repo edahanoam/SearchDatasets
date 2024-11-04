@@ -1,38 +1,18 @@
 import streamlit as st
 import pandas as pd
-from ast import literal_eval
-
-def display_with_links(df, url_column):
-    # Display the dataframe without the URL column
-    st.dataframe(df.drop(columns=[url_column]))
-
-    # Create clickable links and display them separately
-    if not df.empty:
-        st.write("Clickable Links:")
-        for idx, row in df.iterrows():
-            url = row[url_column]
-            st.markdown(f"[{url}]({url})", unsafe_allow_html=True)
 
 
+def load_datasets():
+    df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
+    if 'Unnamed: 0' in df.columns:
+        df = df.drop(columns=['Unnamed: 0'],axis=1)
+    df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
+                  inplace=True)
+    df = df.drop(df.loc[df['Availability'] == 'Unknown'].index)
 
+    return df
 
 def page_set():
-    # Create columns
-
-    st.set_page_config(page_title="Dataset Search", layout="wide")
-    col1, col2 = st.columns([8, 2])  # Adjust the ratio based on your needs
-    if 'show_form' not in st.session_state:
-        st.session_state.show_form = False
-
-    with col1:
-        st.title("Summarization Datasets Search Engine")
-    with col2:
-        if st.button('Suggest A New Dataset'):
-            st.write("first try")
-            #st.session_state.show_form = True
-
-
-def page_set2():
     st.set_page_config(page_title="Dataset Search", layout="wide")
     st.title("Summarization Datasets Search Engine")
     if 'show_form' not in st.session_state:
@@ -40,39 +20,10 @@ def page_set2():
 
     url = "https://github.com/edahanoam/Awesome-Summarization-Datasets"
     st.write("For an updated list and to suggest new datasets, please visit our [GitHub page](%s)." % url)
-    #st.markdown("For the latest list and to suggest new datasets, please visit our [GitHub page](%s)" % url)
-
-
-
-def connect_to_doc(local=False):
-    if not local:
-        # Connect to the Google Sheet
-        url = "https://docs.google.com/spreadsheets/d/1uJqKosaAD0paPTJHT7-g0Ssw_P-X1Mp7aOchFFKGN4M/edit?usp=sharing"
-        df = pd.read_csv(url, dtype=str).fillna("")
-        st.write(df)
-    else:
-        df = pd.read_csv("dataset_list.csv", dtype=str).fillna("")
-        if 'Unnamed: 0' in df.columns:
-            df = df.drop(columns=['Unnamed: 0'],axis=1)
-        df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
-                  inplace=True)
-        df = df.drop(df.loc[df['Availability'] == 'Unknown'].index)
-
-        return df
 
 
 
 def set_search(df):
-    text_search = st.text_input("Search datasets by languages", value="")
-    # Filter the dataframe using masks
-    m1 = df["languages "].apply(lambda x: text_search in x)
-    filtered_df = df[m1]
-
-    if text_search:
-        st.write(filtered_df)
-
-
-def set_search2(df):
     df = df.reset_index(drop=True)
 
     combined_mask = pd.Series([True] * len(df))
@@ -129,21 +80,15 @@ def set_search2(df):
             mask6 = df['Supervision'].isin(selected_Supervision)
             combined_mask &= mask6
 
-
         if selected_Annotation_Efforts:
             mask5 = df['Annotation Efforts'].isin(selected_Annotation_Efforts)
             combined_mask &= mask5
 
-
-
-
-
         # Apply the combined mask to filter the DataFrame
         filtered_df = df[combined_mask]
         if not filtered_df.empty:
-            #st.markdown(df.to_html(render_links=True), unsafe_allow_html=True)
 
-            #change to links
+            # change to links
             st.data_editor(
                 filtered_df,
                 column_config={
@@ -157,51 +102,12 @@ def set_search2(df):
                 hide_index=True,
             )
 
-            #st.write(filtered_df)
         else:
             st.write("No results match your criteria.")
 
 
-def handle_button():
-    # if 'show_form' not in st.session_state:
-    #     st.session_state.show_form = False
-    #
-    # # Button to show the form
-    # if st.button('Suggest A New Dataset'):
-    #     st.session_state.show_form = True
-
-    # Check if the form should be displayed
-    if st.session_state.show_form:
-        with st.form(key='dataset_form'):
-            # Input fields in the form
-            dataset_name = st.text_input("Dataset Name")
-            dataset_paper_name = st.text_input("Paper Name")
-            dataset_paper_link = st.text_input("Paper Link")
-            dataset_length = st.selectbox("Select Length", ['Paragraph','Highlights','Spans','One Sentence', 'Other'])
-            dataset_domain = st.selectbox("Select Domain", ['News', 'Dialogue', 'Scientific', 'Encyclopedia', 'Opinions/Arguments', 'Social Media', 'Instructional', 'Legal', 'Literature', 'Others'])
-            dataset_languages = st.text_input("Supported Languages")
-            dataset_language_modality = st.selectbox("Select Language Modality", ['Monolingual','Multilingual','Crosslingual', 'Other'])
-            dataset_Annotations = st.selectbox("Select Annotations Efforts", ['Automatic','Semi-Automatic','Human Annotation', 'Other'])
-            dataset_Supervision = st.selectbox("Select Source For Supervision", ['Naturally','Distant','Dedicated', 'Other'])
-            dataset_Availiability = st.selectbox("Select Availability", ['Publicly Available (licensed or unlicensed)','Upon Request','Tool Access', 'Other'])
-
-
-            # Form submission button
-            submit_button = st.form_submit_button("Submit Dataset")
-            if submit_button:
-                # Optionally reset the form flag
-                st.session_state.show_form = False
-
-
 if __name__ == '__main__':
-    page_set2()
-    df= connect_to_doc(True)
-
-    if not st.session_state.show_form:
-        set_search2(df)
-    else:
-        handle_button()
-
-
-
+    page_set()
+    df = load_datasets()
+    set_search(df)
 
