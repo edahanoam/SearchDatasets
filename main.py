@@ -9,6 +9,7 @@ def load_datasets():
     df.rename(columns={'Where':'Venue',"Published Year":"Date",'Paper Name ':'Paper'},
                   inplace=True)
     df = df.drop(df.loc[df['Availability'] == 'Unknown'].index)
+    df = df.drop(df.loc[df['Availability'] == '????'].index)
 
     return df
 
